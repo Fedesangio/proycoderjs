@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /*HACE QUE LOS ELEMENTOS MIDAN LO QUE TIENEN QUE MEDIR*/
+}
+
+
+.fotosgrid {
+    height: 100vh;
+    background-color: black;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+
+
+    .galeriagrid {
+        height: calc(100vh - 90px);
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        gap: 6px;
+        overflow: hidden;
+        background-color: black;
+        /* Espacio entre las celdas */
+
+        a {
+            background-image: url(../img/fondo-prueba-126.jpg);
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+
+            p {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                color: white;
+                text-align: left;
+                font-size: 30px;
+
+                transition: 1s;
+                /* Transición suave */
+                padding-left: 10px;
+
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.5);
+                    /* Fondo semitransparente */
+                    opacity: 2;
+                    /* Mostrar al pasar el mouse */
+                    font-size: 80px;
+                }
+            }
+
+            &.img-a {
+                grid-column: 1 / 3;
+            }
+
+            &.img-b {
+                grid-column: 3 / 5;
+                grid-row: 1 / 3;
+            }
+
+            &.img-d {
+                grid-column: 2 / 3;
+                grid-row: 2 / 5;
+            }
+
+            &.img-d {
+                grid-column: 2 / 3;
+                grid-row: 2 / 5;
+            }
+
+            &.img-e {
+                grid-row: 3 / 5;
+            }
+
+            &.img-f {
+                grid-row: 3 / 5;
+            }
+
+            &.img-g {
+                grid-row: 3 / 5;
+            }
+        }
+    }
+}
+
+.image-gallery-section {
+    background-color: black;
+}
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 50rem;
+    margin-inline: auto;
+}
+
+.image-gallery>img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: transform 1s;
+    opacity: 1;
+}
+
+
+.image-gallery:hover img:not(:hover) {
+    transform: scale(0.9);
+    opacity: 0.5;
+}
+
