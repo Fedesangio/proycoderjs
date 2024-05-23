@@ -7,7 +7,7 @@
 
 
 .fotosgrid {
-    height: 100vh;
+    height: (100vh - nav);
     background-color: black;
     background-size: cover;
     display: flex;
@@ -43,7 +43,7 @@
                 color: white;
                 text-align: left;
                 font-size: 30px;
-
+                background-color:  rgba(0, 0, 0, 0.5);
                 transition: 1s;
                 /* Transición suave */
                 padding-left: 10px;
@@ -54,7 +54,7 @@
                     /* Fondo semitransparente */
                     opacity: 2;
                     /* Mostrar al pasar el mouse */
-                    font-size: 80px;
+                    font-size: 50px;
                 }
             }
 
@@ -94,12 +94,19 @@
 
 .image-gallery-section {
     background-color: black;
+    h2 {
+        height: 50px;
+        font-size: 20px;
+        color: white;
+        align-content: center;
+        text-align: center;
+    }
 }
 
 .image-gallery {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    max-width: 50rem;
+    max-width: 900px;
     margin-inline: auto;
 }
 
