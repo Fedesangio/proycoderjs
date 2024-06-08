@@ -46,6 +46,10 @@ function agregarProducto(id) {
 }
 
 let nombre = prompt("Hola, ¿cómo estás? Bienvenido a Blinders. ¿Cuál es tu nombre?");
+if (nombre === null || nombre === "") {
+    nombre = "Usuario";
+}
+
 let nacimiento = prompt(`${nombre}, ¿en qué año naciste?`);
 
 while (nacimiento === null || isNaN(nacimiento) || nacimiento === "" || nacimiento > 2024 || nacimiento < 1900) {
@@ -60,14 +64,16 @@ if (edad < 18) {
     alert(`Ahora si, Bienvenido a Blinders ${nombre}! Tu edad es ${edad} años.`);
 
     let orden = "";
-    while (orden !== "0") {
+    while (orden !== "0" && orden !== "#") {
         orden = prompt(`Hola ${nombre}, ¿qué producto queres comprar?
         \n 1. Fernet | Precio: $${producto_1.precioVenta}
         \n 2. Whisky | Precio: $${producto_2.precioVenta}
         \n 3. Coca-Cola | Precio: $${producto_3.precioVenta}
         \n 4. Cerveza | Precio: $${producto_4.precioVenta}
         \n 5. Jagermaister | Precio: $${producto_5.precioVenta}
-        \n 0. Salir`);
+        \n 0. Realizar la compra
+        \n #. Cancelar la compra`); //no logro hacer que no descuente los productos del stock. 
+
 
         switch (orden) {
             case "1":
@@ -85,8 +91,19 @@ if (edad < 18) {
             case "5":
                 agregarProducto('5');
                 break;
-            case "0":
-                alert(`${nombre}, el total de tu pedido es de $${productos.reduce((totalCompra, producto) => totalCompra + (producto.precioVenta * (20 - producto.stock)), 0)}. Muchas gracias por elegir Blinders! Salud!`);
+                case "0":
+                let resumen = productos
+                .filter(producto => producto.stock < 20)
+                .map(producto => `${20 - producto.stock} botella/as de ${producto.nombre}`)
+                .join('\n');
+                alert(`${nombre}, el total de tu pedido es de $${productos.reduce((totalCompra, producto) => totalCompra + (producto.precioVenta * (20 - producto.stock)), 0)}. 
+                \nResumen de tu compra:
+                \n${resumen}
+                \nMuchas gracias por elegir Blinders! Salud!`);
+                break;
+                case "#":
+                
+                alert("Compra cancelada.");
                 break;
             default:
                 alert("Opción no válida");
@@ -94,6 +111,7 @@ if (edad < 18) {
         }
     }
 }
+
 
 console.log("Stock restante de productos:"); //asi aparece en la consola la frase del stock 
 console.log(productos.map(producto => `${producto.nombre}: ${producto.stock}`));
