@@ -4,6 +4,7 @@ function Producto(id, nombre, stock, precioCompra) {
     this.stock = stock;
     this.precioCompra = precioCompra;
     this.precioVenta = Math.round(precioCompra * 1.3); // Calculamos el precio de venta
+    this.carrovacio = stock
 }
 
 const producto_1 = new Producto('1', 'Fernet', 20, 385);
@@ -19,7 +20,6 @@ let productos = [producto_1, producto_2, producto_3];
 
 console.log(productos);
 
-
 const producto_4 = new Producto("4", "Cerveza", 20, 104);
 productos.push(producto_4);
 
@@ -30,6 +30,14 @@ const producto_5 = new Producto("5", "Jagermaister", 20, 684);
 productos.push(producto_5);
 
 console.log(productos.length);
+
+// let carrovacio = productos.map(producto => producto.stock)
+
+// console.log(carrovacio);
+
+function cancelarCompra() {productos.forEach(producto => {producto.stock = producto.carrovacio;})
+alert("Compra cancelada.");
+}
 
 function agregarProducto(id) {
     let producto = productos.find(producto => producto.id === id);
@@ -91,7 +99,7 @@ if (edad < 18) {
             case "5":
                 agregarProducto('5');
                 break;
-                case "0":
+            case "0":
                 let resumen = productos
                 .filter(producto => producto.stock < 20)
                 .map(producto => `${20 - producto.stock} botella/as de ${producto.nombre}`)
@@ -101,9 +109,11 @@ if (edad < 18) {
                 \n${resumen}
                 \nMuchas gracias por elegir Blinders! Salud!`);
                 break;
-                case "#":
-                
-                alert("Compra cancelada.");
+            case "#":
+                /*Cuando cancele la venta no descuente del stock
+                variable del stock. producto.stock
+                producto.stock que sea igual a inicio*/
+                cancelarCompra()
                 break;
             default:
                 alert("Opción no válida");
