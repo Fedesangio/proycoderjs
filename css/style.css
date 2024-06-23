@@ -258,7 +258,7 @@ header nav div a {
 /*----------------------------------------------------------FORM LOGIN*/
 
 .modal {
-    visibility: hidden;
+    /* visibility: hidden; */
     display: flex;
     justify-content: center;
     align-items: center;
