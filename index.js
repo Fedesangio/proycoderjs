@@ -126,13 +126,271 @@
 // console.log("Stock restante de productos:"); //asi aparece en la consola la frase del stock 
 // console.log(productos.map(producto => `${producto.nombre}: ${producto.stock}`));
 
-const botonMostrarFormulario = document.getElementById('mostrarFormulario');
-const formulario = document.getElementById('formulario');
+// Seleccionamos el formulario
 
-botonMostrarFormulario.addEventListener('click', () => {
-    if (formulario.style.display === 'none') {
-        formulario.style.display = 'block'; // Mostrar formulario
+/*------------------------------------------------------------------------------------------------------------
+const form = document.getElementById("validationForm");
+const btnDelete = document.getElementById("btnDelete");
+
+form.addEventListener("submit", (event) => {
+    event.preventDefault(); 
+    const fechadenacimiento = document.getElementById("fdn").value;
+
+    // Validamos la edad
+    if (isAgeValid(fechadenacimiento)) {
+        closeModal()
+        alert("Bienvenido a la página", "success");
     } else {
-        formulario.style.display = 'none'; // Ocultar formulario
+        alert("Lo siento, debes tener al menos 18 años para ingresar a este sitio", "error");
     }
 });
+
+// Función para validar la edad
+function isAgeValid(fechadenacimiento) {
+    const today = new Date();
+    const birthDate = new Date(fechadenacimiento);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    // Ajustamos la edad si la fecha de nacimiento aún no ha ocurrido este año
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    return age >= 18;
+}
+
+function closeModal() {
+    const modal = document.getElementById("validationModal");
+    modal.style.display = "none";
+}
+
+// const btnDelete = document.getElementById("btnDelete");
+btnDelete.addEventListener("click", () => {
+    form.reset();
+});
+
+--------------------------------------------------------------------------------------------------------------------*/
+
+const form = document.getElementById("validationForm");
+const ingresoModal = document.getElementById("miModaIingreso");
+const denegadoModal = document.getElementById("miModalDenegado");
+//boton cerrar modales
+const cerrarButtons = document.querySelectorAll(".btncerrar");
+
+//boton formulario
+const btnDelete = document.getElementById("btnDelete");
+//botones del carrito
+const btnMostrarCarrito = document.getElementById('btnMostrarCarrito');
+const btnOcultarCarrito = document.getElementById('btnOcultarCarrito');
+const carrito = document.getElementById('carrito');
+
+
+form.addEventListener("submit", (event) => {
+    event.preventDefault(); 
+    const fechadenacimiento = document.getElementById("fdn").value;
+
+    // Validamos la edad
+    if (isAgeValid(fechadenacimiento)) {
+        closeModal();
+        showModal(ingresoModal);
+    } else {
+        showModal(denegadoModal);
+    }
+});
+
+// Función para validar la edad
+function isAgeValid(fechadenacimiento) {
+    const today = new Date();
+    const birthDate = new Date(fechadenacimiento);
+    const birthYear = birthDate.getFullYear();
+
+    // Verificar si el año de nacimiento es anterior a 1924
+    if (birthYear < 1924) {
+        return false;
+    }
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    // Por si la fecha de nacimiento aún no ha ocurrido este año
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    return age >= 18;
+}
+
+function closeModal() {
+    const modal = document.getElementById("validationModal");
+    modal.style.display = "none";
+}
+
+function showModal(modal) {
+    modal.style.display = "block";
+}
+
+// Evento para cerrar los modales
+cerrarButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        ingresoModal.style.display = "none";
+        denegadoModal.style.display = "none";
+    });
+});
+
+btnDelete.addEventListener("click", () => {
+    form.reset();
+});
+
+/*--------------------------------------------------------------------------------------PRODUCTOS*/
+
+class Producto {
+    constructor(id, nombre, stock, precioCompra, imagen, descripcion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.stock = stock;
+        this.precioCompra = precioCompra;
+        this.precioVenta = this.calcularPrecioVenta(precioCompra);
+        this.imagen = imagen;
+        this.descripcion = descripcion;
+    }
+
+    calcularPrecioVenta(precioCompra) {
+        return Math.round(precioCompra * 1.3);
+    }
+}
+
+const productos = [];
+
+// Función para agregar un producto al array
+function agregarProducto(id, nombre, stock, precioCompra, imagen, descripcion) {
+    const producto = new Producto(id, nombre, stock, precioCompra, imagen, descripcion);
+    productos.push(producto);
+}
+
+// productos
+/**
+ * id = number
+ * nombre = String
+ * stock = number
+ * preciocompra = number
+ */
+agregarProducto('1', 'Fernet Branca', 20, 385, "./img/fernet.jpg" ,"Licor de hierbas Fernet Branca 700 CC de procedencia Argentina");
+agregarProducto('2', 'Jhonnie Walker Blue', 20, 1265, "./img/walkerBlue.jpg" , "Whisky Johnnie Walker Blue Label 18 años 750 ml");
+agregarProducto('3', 'Coca Cola 1.5L', 20, 134, "./img/cocaCOla.jpg", "Refresco Coca Cola 1.5 Litros Descartable");
+agregarProducto('4', 'Jagermaister', '20', '834', "./img/jasgger.jpg", "Botella de licor alemán Jaggermeister de 700 ml.");
+agregarProducto('5', 'Jhonnie Walker Black', 20, 1644, "./img/walkerBlack.jpg" ,"Whisky escocés Johnnie Walker Negro en presentación de un litro.");
+agregarProducto('6', 'Gin Tanqueray', 20, 1840, "./img/tanqueray.jpg" , "Botella de Gin Tanqueray de origen inglés en presentación de 750 ml" );
+agregarProducto('7', 'Cerveza Stella Artois 1L', 20, 154, "./img/artois.jpg", "Cerveza Stella Artois en envase retornable de un litro");
+agregarProducto('8', 'Energizante Monter', 20, 88, "./img/monster.jpg", "Bebida Energizante Monster 473 cc");
+
+
+console.log(productos);
+
+function mostrarProductos() {
+    const cardContainer = document.querySelector('.card-container');
+
+    for (const producto of productos) {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        card.innerHTML = `
+            <div class="card">
+            <div class="card-image">
+                <img class="card-img" src="${producto.imagen}" alt="${producto.nombre}">
+            </div>
+            <a href="#" class="card-link">
+                <div class="card-image-hover"></div>
+            </a>
+            <div class="card-info">
+                <span class="card-category">${producto.nombre}</span>
+                <h3 class="card-title">$ ${producto.precioVenta}</h3>
+                <p class="card-text"> ${producto.descripcion} </p>
+                <button id="btnAgregarAlCarrito" class="card-button" type="button">Agregar al Carrito</button>
+            </div>
+            </div>
+        `;
+
+        cardContainer.appendChild(card);
+    }
+}
+
+mostrarProductos();
+
+/*---------------------------------------------------------------------------------------------cerrar modal con enter*/
+
+
+/*---------------------------------------------------------------------------------------------carrito de compras*/
+
+btnMostrarCarrito.addEventListener('click', () => {
+    document.getElementById('carrito').classList.add('visible');
+    document.getElementById('carrito').classList.remove('oculto');
+});
+
+btnOcultarCarrito.addEventListener('click', () => {
+    document.getElementById('carrito').classList.remove('visible');
+    document.getElementById('carrito').classList.add('oculto');
+});
+
+/*------------------------------------------------------------------------------------------------cerrar modales*/
+
+document.addEventListener('click', function(event) {
+    if (!carrito.contains(event.target) && event.target !== btnMostrarCarrito) {
+        carrito.style.right = '-400px';
+    }
+});
+
+btnMostrarCarrito.addEventListener('click', function(event) {
+    event.stopPropagation();
+    carrito.style.right = '0';
+});
+
+btnOcultarCarrito.addEventListener('click', function(event) {
+    event.stopPropagation();
+    carrito.style.right = '-400px';
+});
+
+
+/*----------------------------------------------------------------------------------------------------------------------*/
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btnsAgregarAlCarrito = document.querySelectorAll('.card-button');
+
+    btnsAgregarAlCarrito.forEach((btn) => {
+        btn.addEventListener('click', (event) => {
+            const card = event.target.closest('.card');
+            const producto = {
+                imagen: card.querySelector('.card-img').src,
+                nombre: card.querySelector('.card-category').textContent,
+                precio: parseFloat(card.querySelector('.card-title').textContent.replace('$', ''))
+            };
+            
+            agregarProductoAlCarrito(producto);
+        });
+    });
+});
+
+function agregarProductoAlCarrito(producto) {
+    const listaCompras = document.getElementById('listaCompras');
+    const itemExistente = listaCompras.querySelector(`[data-nombre="${producto.nombre}"]`);
+    
+    if (itemExistente) {
+        const cantidad = itemExistente.querySelector('.cantidadEnCarrito');
+        const precioTotal = itemExistente.querySelector('.precioTotalEnCarrito');
+        const cantidadActual = parseInt(cantidad.textContent);
+        cantidad.textContent = cantidadActual + 1;
+        precioTotal.textContent = `$${producto.precio * (cantidadActual + 1)}`;
+    } else {
+        const li = document.createElement('li');
+        li.setAttribute('data-nombre', producto.nombre);
+        li.innerHTML = `
+        <img src="${producto.imagen}" alt="${producto.nombre}">
+        <div>
+        <span class="nombre">${producto.nombre}</span>
+        <span>Cantidad: <span class="cantidadEnCarrito">1</span></span>
+        </div>
+        <span>Total: <span class="precioTotalEnCarrito">$${producto.precio}</span></span>
+`;
+        listaCompras.appendChild(li);
+    }
+}
