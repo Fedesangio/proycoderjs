@@ -341,7 +341,7 @@ document.addEventListener('click', function(event) {
 });
 
 btnMostrarCarrito.addEventListener('click', function(event) {
-    event.stopPropagation();
+    event.stopPropagation(); //evento que limita el click dentro del boton, no afecta a el contenedor padre
     carrito.style.right = '0';
 });
 
@@ -362,11 +362,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const producto = {
                 imagen: card.querySelector('.card-img').src,
                 nombre: card.querySelector('.card-category').textContent,
-                precio: parseFloat(card.querySelector('.card-title').textContent.replace('$', ''))
+                precio: parseFloat(card.querySelector('.card-title').textContent.replace('$', '')),
+                cantidad: 1 // Inicialmente 1
             };
             
             agregarProductoAlCarrito(producto);
         });
+    });
+
+    // Escuchar eventos de click en los botones de eliminar
+    document.getElementById('listaCompras').addEventListener('click', (event) => {
+        if (event.target.classList.contains('eliminarProducto')) {
+            event.stopPropagation();
+            const item = event.target.closest('li');
+            item.remove();
+            // Cambiar el ícono del carrito si está vacío
+            if (!document.querySelector('#listaCompras li')) {
+                cambiarIconoCarritoVacio();
+            }
+        }
     });
 });
 
@@ -384,13 +398,38 @@ function agregarProductoAlCarrito(producto) {
         const li = document.createElement('li');
         li.setAttribute('data-nombre', producto.nombre);
         li.innerHTML = `
-        <img src="${producto.imagen}" alt="${producto.nombre}">
-        <div>
+        <img class = "imagenCarrito" src="${producto.imagen}" alt="${producto.nombre}">
+        <div class="productoCantidad">
         <span class="nombre">${producto.nombre}</span>
         <span>Cantidad: <span class="cantidadEnCarrito">1</span></span>
         </div>
+        <div class ="precioBoton">
         <span>Total: <span class="precioTotalEnCarrito">$${producto.precio}</span></span>
-`;
+        <button class="eliminarProducto">Eliminar</button>
+        </div>
+        `;
         listaCompras.appendChild(li);
     }
+    cambiarIconoCarrito();
 }
+
+function cambiarIconoCarrito() {
+    const btnCarrito = document.getElementById('btnMostrarCarrito');
+    const imgCarrito = btnCarrito.querySelector('img');
+    imgCarrito.src = './img/carritolleno.png';
+}
+
+function cambiarIconoCarritoVacio() {
+    const btnCarrito = document.getElementById('btnMostrarCarrito');
+    const imgCarrito = btnCarrito.querySelector('img');
+    imgCarrito.src = './img/carrito.png';
+}
+
+
+
+const modalOverlay = document.querySelector('.modal-overlay');
+modalOverlay.classList.add('active');
+
+
+
+

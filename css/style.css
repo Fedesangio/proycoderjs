@@ -276,7 +276,7 @@ header nav div a {
     align-items: center;
     background-color: #121313cd;
     width: 450px;
-    height: 500px;
+    height: 550px;
     border-radius: 25px;
     box-shadow: 10px 10px 10px black;
     margin: 50px;
@@ -389,7 +389,7 @@ label {
     border: 1px solid #036017;
     box-shadow: 5px 5px 5px #036017;
     border-radius: 25px;
-    width: 50%;
+    width: 40%;
     height: 200px;
     position: fixed; /* Cambio de relative a fixed */
     top: 50%; /* Añadido para centrar verticalmente */
@@ -653,11 +653,15 @@ label {
     width: 400px;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.744);
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     transition: right 0.3s ease-in-out;
     backdrop-filter: blur(3px);
     z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 #carrito h2 {
@@ -668,6 +672,11 @@ label {
     text-decoration: underline;
 }
 
+.imagenCarrito {
+    width: 50px;
+    height: 80px;
+}
+
 #carrito.oculto {
     right: -400px;
 }
@@ -676,9 +685,6 @@ label {
     right: 0;
 }
 
-#productos {
-    margin-top: 50px;
-}
 
 #btnOcultarCarrito {
     width: 90%;
@@ -696,6 +702,24 @@ label {
     z-index: 99;
 }
 
+.eliminarProducto {
+    width: 50px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    color: white;
+    background-color: rgba(136, 3, 3, 0.621);
+    border: none;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    z-index: 99;   
+}
+
+.precioBoton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 /*-------------------------------------------------------------------------------------elementos del carrito*/
 
 /* <img class= "imagenEnCarrito" src="${producto.imagen}" alt="${producto.nombre}">
@@ -705,6 +729,10 @@ label {
 
 #listaCompras {
     color: white;
+}
+
+.tituloCarrito {
+    text-align: center;
 }
 
 #listaCompras li {
@@ -738,9 +766,7 @@ label {
     flex-direction: column;
 }
 
-.textoDescriptivo {
-    margin-right: 10px;
-}
+
 /*-----------------------------------------------------------------------------------------------------------*/
 
 
@@ -837,8 +863,9 @@ label {
 /*---------------------------------------------------------------------------------------carrito 790px*/
 
 #carrito {
-    width: 150px;
+    width: 50%;
     z-index: 999999;
+    overflow-y: auto;
 }
 
 #carrito h2 {
@@ -846,8 +873,21 @@ label {
     font-size: 16px;
 }
 
-#btnOcultarCarrito {
+.imagenCarrito {
+    width: 50px;
+    height: 80px;
+    margin: 5px 0px;
+}
 
+.nombre { 
+    font-size: 14px;
+}
+
+#listaCompras {
+    padding-left: 0px;
+}
+
+#btnOcultarCarrito {
     height: 40px;
     font-size: 14px;
     letter-spacing: 0px;
@@ -860,8 +900,25 @@ label {
     height: 90px;
     bottom: 10px;
     right: 10px;
-
 }
 
 }
 /*------------------------------------------------------------------------------------------ cierro query 790px*/
+@media screen and (max-width: 650px) {
+
+#carrito {
+    width: 60%;
+}
+
+}
+
+@media screen and (max-width: 450px) {
+
+    #carrito {
+        width: 90%;
+    }
+    
+    }
+
+
+    /*-----------------------------------*/
