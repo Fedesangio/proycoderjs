@@ -13,29 +13,41 @@
 </head>
 
 <body>
-    <div class="modal" id="validationModal">
-        <div class="form-container">
-            <form id="validationForm">
-                <div class="form-group">
-                    <label for="fullName">Nombre de Usuario:</label>
-                    <input class="input" placeholder="¿Cuál es tu nombre?" type="text" id="fullName" name="fullName" required>
-                </div>
-                <div class="form-group">
-                    <label for="user">Clave:</label>
-                    <input class="input" placeholder="Ingresa tu clave" type="password" id="user" name="user" required>
-                </div>
-                <div class="form-group">
-                    <label for="fdn">Fecha de Nacimiento:</label>
-                    <input class="input" type="date" id="fdn" name="fdn" required>
-                </div>
+    <div id="modalLogin" class="contenedor-login">
+        <form id="loginForm" class="formulario-login">
+            <ul class="navegacion-login">
+                <li class="navegacion-login__item activo" id="loginTab">
+                    <a href="#" onclick="mostrarLogin()">Iniciar Sesión</a>
+                </li>
+                <li class="navegacion-login__item" id="registerTab">
+                    <a href="#" onclick="mostrarRegistro()">Registrarse</a>
+                </li>
+            </ul>
+            <div id="loginSection">
+                <label for="input-usuario" class="etiqueta-login">Nombre de usuario</label>
+                <input id="input-usuario" name="username" class="entrada-login" type="text"  />
+                
+                <label for="input-password" class="etiqueta-login">Contraseña</label>
+                <input id="input-password" name="password" class="entrada-login" type="password"  />
+                                        
+                <button class="boton-login" type="submit">Iniciar Sesión</button>
+            </div>
+            <div id="registerSection" style="display: none;">
+                <label for="register-usuario" class="etiqueta-login">Nombre de usuario</label>
+                <input id="register-usuario" name="registerUsername" class="entrada-login" type="text"  />
 
-                <div class="botones">
-                    <button class="btn" id="btn" type="submit">Enviar</button>
-                    <button class="btnDelete" id="btnDelete" type="button">Borrar</button>
-                </div>
-            </form>
-        </div>
+                <label for="register-password" class="etiqueta-login">Contraseña</label>
+                <input id="register-password" name="registerPassword" class="entrada-login" type="password"  />
+                
+                <label for="register-fecha-nacimiento" class="etiqueta-login">Fecha de Nacimiento</label>
+                <input id="register-fecha-nacimiento" name="birthdate" class="entrada-login" type="date"  />
+                
+                <button class="boton-login" type="submit">Registrarse</button>
+            </div>
+        </form>
+        <a href="#" class="olvido-login">¿Olvidaste tu contraseña?</a>
     </div>
+
 
 <!-- Icono del carrito  -->
 
@@ -51,24 +63,14 @@
         <button id="btnOcultarCarrito">Ocultar Carrito</button>
     </div>
 
-<!-- Modal bienvenida o mensaje de error  -->
-
-<div id="miModaIingreso" class="mimodal">
-    <div class="modal-content">
-        <div class="modalContent" id="modalContent">
-        <p class="parrafoModal">Bienvenido/a a la página.</p>
-        <img class="logosimple" src="./img/davis (100 x 100 px).png" alt="Bienvenida">
-        <button class="btncerrar" role="button" tabindex="0">Cerrar</button>
-        </div>
-    </div>
-</div>
+<!-- Modal bienvenida o mensaje de error quedo este solo, no es el denegado, es en el que se imprimen todos los mensajes  -->
 
 <div id="miModalDenegado" class="mimodaldenegado">
     <div class="modal-content">
         <div class="modalContent" id="modalContent">
-        <p class="parrafoModaldenegado">No puedes ingresar a la pagina. No ingresaste un valor correcto o no tienes edad suficiente para ingresar a la web.</p>
-        <img class="logosimple" src="./img/davis (100 x 100 px).png" alt="Bienvenida">
-        <button class="btncerrar" type="button">Cerrar</button>
+            <p id="errorText" class="parrafoModaldenegado"></p>
+            <img class="logosimple" src="./img/davis (100 x 100 px).png" alt="Bienvenida">
+            <button class="btncerrar" id="btnCerrar" type="button">Cerrar</button>
         </div>
     </div>
 </div>
