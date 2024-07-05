@@ -171,7 +171,6 @@ btnDelete.addEventListener("click", () => {
 });
 
 -------------------------------------------------------------------------------------------------------------desde aca empieza el proyecto*/
-
 const form = document.getElementById("validationForm");
 const denegadoModal = document.getElementById("miModalDenegado");
 //boton cerrar modales
@@ -191,6 +190,8 @@ function mostrarLogin() {
     document.getElementById('registerSection').style.display = 'none';
     document.getElementById('loginTab').classList.add('activo');
     document.getElementById('registerTab').classList.remove('activo');
+    document.body.classList.add('noFunciona'); //no borres!
+    document.body.classList.add('body-no-scroll');
 }
 
 function mostrarRegistro() {
@@ -198,9 +199,11 @@ function mostrarRegistro() {
     document.getElementById('registerSection').style.display = 'block';
     document.getElementById('loginTab').classList.remove('activo');
     document.getElementById('registerTab').classList.add('activo');
+    document.body.classList.add('noFunciona') //no borres!
+    document.body.classList.add('body-no-scroll');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() { //con esto identifico si hay usuarios guardados y arranca en registro si no hay
     let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
 
     if (Object.keys(usuarios).length === 0) {
@@ -219,12 +222,13 @@ function esMayorDeEdad(fechaNacimiento) {
     if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
         edad--;  
     }
-    return edad >= 18 && edad <80;
+    return edad >= 18 && edad <80; //limito a 80 años para que no puedan poner cualquier año de naciomiento
 }
 
 function mostrarModal(mensaje) {
     document.getElementById('errorText').innerText = mensaje;
     document.getElementById('miModalDenegado').style.display = 'block';
+    document.body.classList.add('noFunciona') //no borrar esta declaracion en ninguna parte del codigo, todas son necesarias
 }
 
 function cerrarModal() {
@@ -278,6 +282,8 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     if (usuarios[username] && usuarios[username] === password) {
 
         mostrarModal('Inicio de sesión exitoso.');
+        document.body.classList.remove('noFunciona'); 
+        document.body.classList.remove('body-no-scroll')//borro la clase del body que impide que haga click en el body cuando estoy haciendo el login
 
         document.getElementById('modalLogin').style.display = 'none'; // Cerrar el modal
         document.getElementById('input-usuario').value = '';
@@ -290,6 +296,82 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 });
 
 document.getElementById('btnCerrar').addEventListener('click', cerrarModal);
+
+/*---------------------------------------------------------------------------------------imagenes inicio*/
+
+// capturar elementos
+const contenedorImagenes = document.getElementById('contenedorImagenes');
+const publicidad = document.getElementById('publicidad');
+
+// Definir las imágenes para cada botón
+const imagenes = {
+    botonFernet: "./img/botellaFernet1.png",
+    botonJagger: "./img/botellaJagger1.png",
+    botonTanque: "./img/botellaTanqueray1.png",
+    botonJhonnie: "./img/botellaBluelabel1.png"
+};
+
+// Función para ocultar la publicidad y mostrar las imágenes pequeñas
+function restaurarImagenesPequenas() {
+    publicidad.classList.remove('float-in');
+    publicidad.classList.add('fade-out');
+
+    setTimeout(() => {
+        publicidad.style.display = 'none';
+        publicidad.classList.remove('fade-out');
+        contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
+            imgContainer.style.display = 'flex';
+            imgContainer.classList.remove('fade-out');
+            imgContainer.classList.add('fade-in'); // 
+        });
+    }, 500); 
+}
+// Agregar evento click a cada botón de imagen
+contenedorImagenes.querySelectorAll('.img-container button').forEach(boton => {
+    boton.addEventListener('click', function() {
+        // Obtener la id del botón clickeado
+        const botonId = boton.id;
+        const imgSrc = imagenes[botonId];  // la imagen correspondiente al botón clickeado
+        const imgGrande = document.createElement('img'); // Crear nueva imagen para mostrar en publicidad
+        imgGrande.src = imgSrc;
+        imgGrande.style.objectFit = 'cover';
+
+
+        contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
+            imgContainer.classList.add('fade-out');         // Oculta las marcas
+        });
+
+        setTimeout(() => { //funcion que demora la animacion
+            contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
+                imgContainer.style.display = 'none';
+            });
+            
+            
+            publicidad.innerHTML = ''; // Limpiar el contenido previo de publicidad y añadir la nueva imagen
+            publicidad.appendChild(imgGrande);
+
+            
+            publicidad.classList.add('float-in'); // Mostrar la publicidad con animación
+            publicidad.style.display = 'block';
+
+            
+            imgGrande.addEventListener('click', function() { // Agregar evento click a la imagen de publicidad
+                restaurarImagenesPequenas();
+            });
+        }, 500); // Tiempo que dura la animacion 
+    });
+});
+
+
+
+document.addEventListener('click', function(event) { //funcion para que identifique que hice click y ejecute las marcas
+
+    if (publicidad.style.display === 'block' && 
+        (!publicidad.contains(event.target) || publicidad.contains(event.target))) {
+        restaurarImagenesPequenas();
+    }
+    
+});
 
 /*--------------------------------------------------------------------------------------PRODUCTOS*/
 
@@ -331,7 +413,7 @@ agregarProducto('4', 'Jagermaister', '20', '834', "./img/jasgger.jpg", "Botella 
 agregarProducto('5', 'Jhonnie Walker Black', 20, 1644, "./img/walkerBlack.jpg" ,"Whisky escocés Johnnie Walker Negro en presentación de un litro.");
 agregarProducto('6', 'Gin Tanqueray', 20, 1840, "./img/tanqueray.jpg" , "Botella de Gin Tanqueray de origen inglés en presentación de 750 ml" );
 agregarProducto('7', 'Cerveza Stella Artois 1L', 20, 154, "./img/artois.jpg", "Cerveza Stella Artois en envase retornable de un litro");
-agregarProducto('8', 'Energizante Monter', 20, 88, "./img/monster.jpg", "Bebida Energizante Monster 473 cc");
+agregarProducto('8', 'Energizante Monster', 20, 88, "./img/monster.jpg", "Bebida Energizante Monster 473 cc");
 
 
 console.log(productos);
@@ -348,9 +430,7 @@ function mostrarProductos() {
             <div class="card-image">
                 <img class="card-img" src="${producto.imagen}" alt="${producto.nombre}">
             </div>
-            <a href="#" class="card-link">
-                <div class="card-image-hover"></div>
-            </a>
+            <a href="#" class="card-link"></a>
             <div class="card-info">
                 <span class="card-category">${producto.nombre}</span>
                 <h3 class="card-title">$ ${producto.precioVenta}</h3>
@@ -402,7 +482,7 @@ btnOcultarCarrito.addEventListener('click', function(event) {
 
 /*----------------------------------------------------------------------------------------------------------------------*/
 
-let contadorID = 0; // Contador para generar IDs únicos (cambio por el metodo de closest)
+let contadorID = 0; // Contador para generar IDs únicos
 
 document.addEventListener('DOMContentLoaded', () => {
     const btnsAgregarAlCarrito = document.querySelectorAll('.card-button');
@@ -418,18 +498,68 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             
             agregarProductoAlCarrito(producto);
+
+            Toastify({
+                text: "¡Añadido al carrito!",
+                className: "info",
+                duration: 900,
+                style: {
+                    background: "#0360179f",
+                    borderRadius: "25px",
+                }
+            }).showToast();
         });
     });
 
-    // Escuchar eventos de click en los botones de eliminar
+    // Escuchar eventos de click en los botones de eliminar y restar
     document.getElementById('listaCompras').addEventListener('click', (event) => {
-        if (event.target.classList.contains('eliminarProducto')) {
+        const target = event.target.closest('button');
+        if (target) {
             event.stopPropagation();
-            const itemID = event.target.dataset.id;
-            document.getElementById(itemID).remove();
-            // Cambiar el ícono del carrito si está vacío
-            if (!document.querySelector('#listaCompras li')) {
-                cambiarIconoCarritoVacio();
+            const itemID = target.dataset.id;
+            if (target.classList.contains('eliminarProducto')) {
+                document.getElementById(itemID).remove();
+                // Cambiar el ícono del carrito si está vacío
+                if (!document.querySelector('#listaCompras li')) {
+                    cambiarIconoCarritoVacio();
+                }
+                Toastify({
+                    text: "¡Producto Eliminado!",
+                    className: "info",
+                    gravity: "bottom",
+                    duration: 900,
+                    style: {
+                        background: "rgba(136, 3, 3, 0.621)",
+                        borderRadius: "25px",
+                    }
+                }).showToast();
+            }
+            if (target.classList.contains('restarProducto')) {
+                const item = document.getElementById(itemID);
+                const cantidad = item.querySelector('.cantidadEnCarrito');
+                const precioTotal = item.querySelector('.precioTotalEnCarrito');
+                const cantidadActual = parseInt(cantidad.textContent);
+                const precioUnitario = parseFloat(precioTotal.textContent.replace('$', '')) / cantidadActual;
+                Toastify({
+                    text: "¡Producto Eliminado!",
+                    className: "info",
+                    gravity: "bottom",
+                    duration: 900,
+                    style: {
+                        background: "rgb(9, 9, 131)",
+                        borderRadius: "25px",
+                    }
+                }).showToast();
+                if (cantidadActual > 1) {
+                    cantidad.textContent = cantidadActual - 1;
+                    precioTotal.textContent = `$${(precioUnitario * (cantidadActual - 1)).toFixed(2)}`;
+                } else {
+                    item.remove();
+                    // Cambiar el ícono del carrito si está vacío
+                    if (!document.querySelector('#listaCompras li')) {
+                        cambiarIconoCarritoVacio();
+                    }
+                }
             }
         }
     });
@@ -444,21 +574,26 @@ function agregarProductoAlCarrito(producto) {
         const precioTotal = itemExistente.querySelector('.precioTotalEnCarrito');
         const cantidadActual = parseInt(cantidad.textContent);
         cantidad.textContent = cantidadActual + 1;
-        precioTotal.textContent = `$${producto.precio * (cantidadActual + 1)}`;
+        precioTotal.textContent = `$${(producto.precio * (cantidadActual + 1)).toFixed(2)}`;
     } else {
         const li = document.createElement('li');
         li.setAttribute('data-nombre', producto.nombre);
         const itemID = `item-${contadorID++}`; // Generar un ID único
         li.id = itemID; // Asignar el ID al elemento li
         li.innerHTML = `
-            <img class="imagenCarrito" src="${producto.imagen}" alt="${producto.nombre}">
+            <div>
+                <img class="imagenCarrito" src="${producto.imagen}" alt="${producto.nombre}">
+            </div>
             <div class="productoCantidad">
                 <span class="nombre">${producto.nombre}</span>
                 <span>Cantidad: <span class="cantidadEnCarrito">1</span></span>
             </div>
             <div class="precioBoton"> 
-                <span>Total: <span class="precioTotalEnCarrito">$${producto.precio}</span></span>
-                <button class="eliminarProducto" data-id="${itemID}">Eliminar</button>
+                <span>Total: <span class="precioTotalEnCarrito">$${producto.precio.toFixed(2)}</span></span>
+            <div>
+                <button class="restarProducto" data-id="${itemID}"><i class="bi bi-arrow-down-circle"></i></button>
+                <button class="eliminarProducto" data-id="${itemID}"><i class="bi bi-ban"></i></button>
+            </div>
             </div>
         `;
         listaCompras.appendChild(li);
@@ -479,3 +614,90 @@ function cambiarIconoCarritoVacio() {
 }
 
 
+/*---------------------------------------------------------------------------------------------------modal cierre de ventas*/ 
+
+document.getElementById('btnConfirmarPedido').addEventListener('click', function() {
+    const resumenCompra = document.getElementById('resumenCompra');
+    resumenCompra.innerHTML = ''; // Limpiar el contenido previo
+
+    const productosEnCarrito = document.querySelectorAll('#listaCompras li');
+    let totalCompra = 0;
+
+    productosEnCarrito.forEach(item => {
+        const nombre = item.querySelector('.nombre').textContent;
+        const cantidad = item.querySelector('.cantidadEnCarrito').textContent;
+        const total = item.querySelector('.precioTotalEnCarrito').textContent;
+
+        totalCompra += parseFloat(total.replace('$', ''));
+
+        const productoItem = document.createElement('div');
+        productoItem.classList.add('producto-item');
+        productoItem.innerHTML = `
+            <div class="producto-info">
+                <span>${nombre}</span>
+                <br>
+                <span>Cantidad: ${cantidad}</span>
+            </div>
+            <div class="producto-total">${total}</div>
+        `;
+
+        resumenCompra.appendChild(productoItem);
+    });
+
+    const totalItem = document.createElement('div');
+    totalItem.classList.add('producto-item');
+    totalItem.innerHTML = `
+        <div class="producto-info">
+            <strong>Total</strong>
+        </div>
+        <div class="producto-total">$${totalCompra.toFixed(2)}</div> 
+    `;
+
+    resumenCompra.appendChild(totalItem);
+
+    // Desplazar la página hacia arriba
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
+    // Mostrar el modal
+    document.getElementById('modalConfirmarPedido').style.display = 'block';
+
+    // Cerrar el modal del carrito
+    document.getElementById('modalCarrito').style.display = 'none';
+});
+
+document.getElementById('btnCerrarConfirmarPedido').addEventListener('click', function() {
+    document.getElementById('modalConfirmarPedido').style.display = 'none';
+});
+
+document.getElementById('btnFinalizarCompra').addEventListener('click', function() {
+    Swal.fire({
+        title: "Confirmas la compra?",
+        text: "No tenes vuelta atras!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: "Listo!",
+                text: "Muchas gracias por elegirnos, Salud!!",
+                icon: "success"
+            });
+
+            // Vaciar el carrito
+            const carrito = document.getElementById('listaCompras');
+            carrito.innerHTML = '';
+
+            // Cambiar el icono del carrito a vacío
+            cambiarIconoCarritoVacio();
+        }
+    });
+
+    // Cerrar el modal de confirmar pedido
+    document.getElementById('modalConfirmarPedido').style.display = 'none';
+});
