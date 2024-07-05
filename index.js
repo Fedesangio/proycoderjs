@@ -192,6 +192,12 @@ function mostrarLogin() {
     document.getElementById('registerTab').classList.remove('activo');
     document.body.classList.add('noFunciona'); //no borres!
     document.body.classList.add('body-no-scroll');
+
+        // Desplazar la página hacia arriba
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
 }
 
 function mostrarRegistro() {
@@ -283,7 +289,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
         mostrarModal('Inicio de sesión exitoso.');
         document.body.classList.remove('noFunciona'); 
-        document.body.classList.remove('body-no-scroll')//borro la clase del body que impide que haga click en el body cuando estoy haciendo el login
+        document.body.classList.remove('body-no-scroll')//borro la clase del body que impide que haga scroll
 
         document.getElementById('modalLogin').style.display = 'none'; // Cerrar el modal
         document.getElementById('input-usuario').value = '';
@@ -511,58 +517,58 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Escuchar eventos de click en los botones de eliminar y restar
-    document.getElementById('listaCompras').addEventListener('click', (event) => {
-        const target = event.target.closest('button');
-        if (target) {
-            event.stopPropagation();
-            const itemID = target.dataset.id;
-            if (target.classList.contains('eliminarProducto')) {
-                document.getElementById(itemID).remove();
+// Escuchar eventos de click en los botones de eliminar y restar
+document.getElementById('listaCompras').addEventListener('click', (event) => {
+    const target = event.target.closest('button');
+    if (target) {
+        event.stopPropagation();
+        const itemID = target.dataset.id;
+        if (target.classList.contains('eliminarProducto')) {
+            document.getElementById(itemID).remove();
+            // Cambiar el ícono del carrito si está vacío
+            if (!document.querySelector('#listaCompras li')) {
+                cambiarIconoCarritoVacio();
+            }
+            Toastify({
+                text: "¡Producto Eliminado!",
+                className: "info",
+                gravity: "bottom",
+                duration: 900,
+                style: {
+                    background: "rgba(136, 3, 3, 0.621)",
+                    borderRadius: "25px",
+                }
+            }).showToast();
+        }
+        if (target.classList.contains('restarProducto')) {
+            const item = document.getElementById(itemID);
+            const cantidad = item.querySelector('.cantidadEnCarrito');
+            const precioTotal = item.querySelector('.precioTotalEnCarrito');
+            const cantidadActual = parseInt(cantidad.textContent);
+            const precioUnitario = parseFloat(precioTotal.textContent.replace('$', '')) / cantidadActual;
+            Toastify({
+                text: "¡Producto Eliminado!",
+                className: "info",
+                gravity: "bottom",
+                duration: 900,
+                style: {
+                    background: "rgb(9, 9, 131)",
+                    borderRadius: "25px",
+                }
+            }).showToast();
+            if (cantidadActual > 1) {
+                cantidad.textContent = cantidadActual - 1;
+                precioTotal.textContent = `$${(precioUnitario * (cantidadActual - 1)).toFixed(2)}`;
+            } else {
+                item.remove();
                 // Cambiar el ícono del carrito si está vacío
                 if (!document.querySelector('#listaCompras li')) {
                     cambiarIconoCarritoVacio();
                 }
-                Toastify({
-                    text: "¡Producto Eliminado!",
-                    className: "info",
-                    gravity: "bottom",
-                    duration: 900,
-                    style: {
-                        background: "rgba(136, 3, 3, 0.621)",
-                        borderRadius: "25px",
-                    }
-                }).showToast();
-            }
-            if (target.classList.contains('restarProducto')) {
-                const item = document.getElementById(itemID);
-                const cantidad = item.querySelector('.cantidadEnCarrito');
-                const precioTotal = item.querySelector('.precioTotalEnCarrito');
-                const cantidadActual = parseInt(cantidad.textContent);
-                const precioUnitario = parseFloat(precioTotal.textContent.replace('$', '')) / cantidadActual;
-                Toastify({
-                    text: "¡Producto Eliminado!",
-                    className: "info",
-                    gravity: "bottom",
-                    duration: 900,
-                    style: {
-                        background: "rgb(9, 9, 131)",
-                        borderRadius: "25px",
-                    }
-                }).showToast();
-                if (cantidadActual > 1) {
-                    cantidad.textContent = cantidadActual - 1;
-                    precioTotal.textContent = `$${(precioUnitario * (cantidadActual - 1)).toFixed(2)}`;
-                } else {
-                    item.remove();
-                    // Cambiar el ícono del carrito si está vacío
-                    if (!document.querySelector('#listaCompras li')) {
-                        cambiarIconoCarritoVacio();
-                    }
-                }
             }
         }
-    });
+    }
+});
 });
 
 function agregarProductoAlCarrito(producto) {
