@@ -10,6 +10,7 @@
 
 .barrabarra {
     background-color: #000000!important;
+    z-index: 1;
 }
 .barrabarra a {
     text-decoration: none !important;
@@ -51,7 +52,7 @@ body {
 
 /*----------------------------------------------------------FORM LOGIN*/
 
- .noFunciona {
+.noFunciona {
     pointer-events: none; 
     opacity: 1; 
 }
@@ -61,7 +62,7 @@ body {
 } 
 
 .contenedor-login {
-    /*visibility: hidden;*/  
+    /* visibility: hidden;   */
     display: block;
     position: fixed;
     z-index: 10;
@@ -1036,6 +1037,7 @@ body {
     max-width: 600px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.9);
+    z-index: 100000000;
 }
 
 .modal-header-confirmar-pedido {
@@ -1287,8 +1289,26 @@ background-color: #036017;
     transition: transform 0.3s ease;
 }
 
+.publicidad {
+    width: 50%;
+    height: calc(100vh - 300px);
+}
 
+.texto-contenedor {
+    width: 50%;
+    height: calc(100vh - 200px);
+    bottom: 50px;
+    right: 5px;
+    display: none;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 5;
+    text-align: center; /*no se porque esto alinea el contenido de la api*/
+}
 
+.texto-contenedor p {
+    font-size: 14px;
+}
 
 /*---------------------------------------------------------------------------------------NOSOTROS*/
 
