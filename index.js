@@ -209,7 +209,7 @@ function mostrarRegistro() {
     document.body.classList.add('body-no-scroll');
 }
 
-document.addEventListener('DOMContentLoaded', function() { //con esto identifico si hay usuarios guardados y arranca en registro si no hay
+document.addEventListener('DOMContentLoaded', function() {
     let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
 
     if (Object.keys(usuarios).length === 0) {
@@ -217,6 +217,13 @@ document.addEventListener('DOMContentLoaded', function() { //con esto identifico
     } else {
         mostrarLogin();
     }
+
+    document.getElementById('registerSection').querySelector('button[type="submit"]').onclick = registrarUsuario;
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        iniciarSesion();
+    });
+    document.getElementById('btnCerrar').addEventListener('click', cerrarModal);
 });
 
 function esMayorDeEdad(fechaNacimiento) {
@@ -228,17 +235,27 @@ function esMayorDeEdad(fechaNacimiento) {
     if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
         edad--;  
     }
-    return edad >= 18 && edad <80; //limito a 80 años para que no puedan poner cualquier año de naciomiento
+    return edad >= 18 && edad < 80; // Limitar a 80 años para evitar fechas no válidas
 }
 
 function mostrarModal(mensaje) {
     document.getElementById('errorText').innerText = mensaje;
     document.getElementById('miModalDenegado').style.display = 'block';
-    document.body.classList.add('noFunciona') //no borrar esta declaracion en ninguna parte del codigo, todas son necesarias
+    document.body.classList.add('noFunciona'); // No borrar esta declaración en ninguna parte del código, todas son necesarias
 }
 
 function cerrarModal() {
     document.getElementById('miModalDenegado').style.display = 'none';
+}
+
+function mostrarRegistro() {
+    document.getElementById('registerSection').style.display = 'block';
+    document.getElementById('loginSection').style.display = 'none';
+}
+
+function mostrarLogin() {
+    document.getElementById('registerSection').style.display = 'none';
+    document.getElementById('loginSection').style.display = 'block';
 }
 
 function registrarUsuario(event) {
@@ -254,7 +271,7 @@ function registrarUsuario(event) {
     }
 
     if (!esMayorDeEdad(birthdate)) {
-        mostrarModal('Hay un error en la fecha de nacimiento.');
+        mostrarModal('Hay un error en la fecha de nacimiento o no tienes suficiente edad para ingresar.');
         return;
     }
 
@@ -274,24 +291,16 @@ function registrarUsuario(event) {
     document.getElementById('register-password').value = '';
     document.getElementById('register-fecha-nacimiento').value = '';
 }
-// Asociar la función registrarUsuario al evento click del botón de registro
-document.getElementById('registerSection').querySelector('button[type="submit"]').onclick = registrarUsuario;
 
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
+function iniciarSesion() {
     const username = document.getElementById('input-usuario').value;
     const password = document.getElementById('input-password').value;
-
-    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {}; 
+    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
 
     if (usuarios[username] && usuarios[username] === password) {
-
         mostrarModal('Inicio de sesión exitoso.');
-        document.body.classList.remove('noFunciona'); 
-        document.body.classList.remove('body-no-scroll')//borro la clase del body que impide que haga scroll
-
-        document.getElementById('modalLogin').style.display = 'none'; // Cerrar el modal
+        document.body.classList.remove('noFunciona', 'body-no-scroll');
+        document.getElementById('modalLogin').style.display = 'none';
         document.getElementById('input-usuario').value = '';
         document.getElementById('input-password').value = '';
     } else if (!usuarios[username]) {
@@ -299,15 +308,13 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     } else {
         mostrarModal('Nombre de usuario o contraseña incorrectos.');
     }
-});
-
-document.getElementById('btnCerrar').addEventListener('click', cerrarModal);
+}
 
 /*---------------------------------------------------------------------------------------imagenes inicio*/
 
-// capturar elementos
 const contenedorImagenes = document.getElementById('contenedorImagenes');
 const publicidad = document.getElementById('publicidad');
+const heroTituloBoton = document.querySelector('.hero-titulo-boton');
 
 // Definir las imágenes para cada botón
 const imagenes = {
@@ -320,65 +327,103 @@ const imagenes = {
 // Función para ocultar la publicidad y mostrar las imágenes pequeñas
 function restaurarImagenesPequenas() {
     publicidad.classList.remove('float-in');
-    publicidad.classList.add('fade-out');
+    publicidad.classList.add('float-out');
+
+    const textoContenedor = document.querySelector('.texto-contenedor');
+
+    if (textoContenedor) {
+        textoContenedor.classList.add('fade-out');
+        setTimeout(() => {
+            textoContenedor.remove();
+            heroTituloBoton.classList.remove('fade-out');
+            heroTituloBoton.classList.add('fade-in');
+            heroTituloBoton.style.display = 'flex';
+        }, 500); // Tiempo de la animación de salida del cuadro
+    }
 
     setTimeout(() => {
         publicidad.style.display = 'none';
-        publicidad.classList.remove('fade-out');
+        publicidad.classList.remove('float-out');
         contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
             imgContainer.style.display = 'flex';
-            imgContainer.classList.remove('fade-out');
-            imgContainer.classList.add('fade-in'); // 
+            imgContainer.classList.remove('fade-out', 'float-down'); // Eliminar ambas clases de animación asi no se tranca
+            imgContainer.classList.add('fade-in');
         });
-    }, 500); 
+    }, 500); //Tiempo aparecen los iconos chicos
 }
+
+// Función para manejar el clic en los botones de imagen
+function manejarClickBotonImagen(boton) {
+    const botonId = boton.id;
+    const imgSrc = imagenes[botonId];
+
+    const imgGrande = document.createElement('img');
+    imgGrande.src = imgSrc;
+    imgGrande.style.objectFit = 'cover';
+
+    // Crear nuevo contenedor de texto
+    const textoContenedor = document.createElement('div');
+    textoContenedor.classList.add('texto-contenedor');
+
+    // Fetch para obtener un trago aleatorio
+    fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
+        .then(response => response.json())
+        .then(data => {
+            const cocktail = data.drinks[0];
+            textoContenedor.innerHTML = `
+                <h3>Prepara tu Coctel "${cocktail.strDrink}"</h3>
+                <img src="${cocktail.strDrinkThumb}" alt="Cocktail Image">
+                <p>Instrucciones: ${cocktail.strInstructions}</p>
+            `;
+
+            contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
+                imgContainer.classList.remove('fade-in', 'fade-out'); // Eliminar clases de animación anteriores porque sino se tranca
+                imgContainer.classList.add('float-down');
+            });
+
+            setTimeout(() => {
+                contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
+                    imgContainer.style.display = 'none';
+                    imgContainer.classList.remove('float-down'); // Remover clases de animación porque sino se tranca
+                });
+
+                heroTituloBoton.classList.add('fade-out');
+
+                setTimeout(() => {
+                    heroTituloBoton.style.display = 'none';
+                    publicidad.innerHTML = '';
+                    publicidad.appendChild(imgGrande);
+                    publicidad.classList.add('float-in');
+                    publicidad.style.display = 'block';
+
+                    document.body.appendChild(textoContenedor);
+                    textoContenedor.classList.add('fade-in');
+                    textoContenedor.style.display = 'block';
+                }, 500); //aparece img promo y cuadro
+            }, 200); //desaparece boton hero
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarModal('Hubo un error al obtener el coctel. Por favor, intenta nuevamente.');
+        });
+}
+
 // Agregar evento click a cada botón de imagen
 contenedorImagenes.querySelectorAll('.img-container button').forEach(boton => {
     boton.addEventListener('click', function() {
-        // Obtener la id del botón clickeado
-        const botonId = boton.id;
-        const imgSrc = imagenes[botonId];  // la imagen correspondiente al botón clickeado
-        const imgGrande = document.createElement('img'); // Crear nueva imagen para mostrar en publicidad
-        imgGrande.src = imgSrc;
-        imgGrande.style.objectFit = 'cover';
-
-
-        contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
-            imgContainer.classList.add('fade-out');         // Oculta las marcas
-        });
-
-        setTimeout(() => { //funcion que demora la animacion
-            contenedorImagenes.querySelectorAll('.img-container').forEach(imgContainer => {
-                imgContainer.style.display = 'none';
-            });
-            
-            
-            publicidad.innerHTML = ''; // Limpiar el contenido previo de publicidad y añadir la nueva imagen
-            publicidad.appendChild(imgGrande);
-
-            
-            publicidad.classList.add('float-in'); // Mostrar la publicidad con animación
-            publicidad.style.display = 'block';
-
-            
-            imgGrande.addEventListener('click', function() { // Agregar evento click a la imagen de publicidad
-                restaurarImagenesPequenas();
-            });
-        }, 500); // Tiempo que dura la animacion 
+        manejarClickBotonImagen(boton);
     });
 });
 
-
-
-document.addEventListener('click', function(event) { //funcion para que identifique que hice click y ejecute las marcas
-
-    if (publicidad.style.display === 'block' && 
+// Detectar click fuera de la publicidad dentro y en el contenedor también
+document.addEventListener('click', function(event) {
+    if (publicidad.style.display === 'block' &&
         (!publicidad.contains(event.target) || publicidad.contains(event.target))) {
         restaurarImagenesPequenas();
     }
-    
 });
 
+// el unico error que no logro solucionar es que si se hace por error dos click en el icono de la marca carga 2 coctel y se queda ahi esa imagen.
 /*--------------------------------------------------------------------------------------PRODUCTOS*/
 
 class Producto {
@@ -415,14 +460,15 @@ function agregarProducto(id, nombre, stock, precioCompra, imagen, descripcion) {
 agregarProducto('1', 'Fernet Branca', 20, 385, "./img/fernet.jpg" ,"Licor de hierbas Fernet Branca 700 CC de procedencia Argentina");
 agregarProducto('2', 'Jhonnie Walker Blue', 20, 1265, "./img/walkerBlue.jpg" , "Whisky Johnnie Walker Blue Label 18 años 750 ml");
 agregarProducto('3', 'Coca Cola 1.5L', 20, 134, "./img/cocaCOla.jpg", "Refresco Coca Cola 1.5 Litros Descartable");
-agregarProducto('4', 'Jagermaister', '20', '834', "./img/jasgger.jpg", "Botella de licor alemán Jaggermeister de 700 ml.");
+agregarProducto('4', 'Jagermaister', 20, 834, "./img/jasgger.jpg", "Botella de licor alemán Jaggermeister de 700 ml.");
 agregarProducto('5', 'Jhonnie Walker Black', 20, 1644, "./img/walkerBlack.jpg" ,"Whisky escocés Johnnie Walker Negro en presentación de un litro.");
 agregarProducto('6', 'Gin Tanqueray', 20, 1840, "./img/tanqueray.jpg" , "Botella de Gin Tanqueray de origen inglés en presentación de 750 ml" );
-agregarProducto('7', 'Cerveza Stella Artois 1L', 20, 154, "./img/artois.jpg", "Cerveza Stella Artois en envase retornable de un litro");
+agregarProducto('7', 'Stella Artois 1L', 20, 154, "./img/artois.jpg", "Cerveza Stella Artois en envase retornable de un litro");
 agregarProducto('8', 'Energizante Monster', 20, 88, "./img/monster.jpg", "Bebida Energizante Monster 473 cc");
+agregarProducto('9', 'Bolsa de Hielo', 20, 120, "./img/hielo.jpeg", "Bolsa de hielo de 5 kilos.");
 
 
-console.log(productos);
+console.log(productos); //aso sale por consola los productos en el array
 
 function mostrarProductos() {
     const cardContainer = document.querySelector('.card-container');
@@ -431,23 +477,23 @@ function mostrarProductos() {
         const card = document.createElement('div');
         card.classList.add('card');
 
-        card.innerHTML = `
-            <div class="card">
-            <div class="card-image">
-                <img class="card-img" src="${producto.imagen}" alt="${producto.nombre}">
-            </div>
-            <a href="#" class="card-link"></a>
-            <div class="card-info">
-                <span class="card-category">${producto.nombre}</span>
-                <h3 class="card-title">$ ${producto.precioVenta}</h3>
-                <p class="card-text"> ${producto.descripcion} </p>
-                <button id="btnAgregarAlCarrito" class="card-button" type="button">Agregar al Carrito</button>
-            </div>
-            </div>
-        `;
+card.innerHTML = `
+    <div class="card">
+    <div class="card-image">
+        <img class="card-img" src="${producto.imagen}" alt="${producto.nombre}">
+    </div>
+    <a href="#" class="card-link"></a>
+    <div class="card-info">
+        <span class="card-category">${producto.nombre}</span>
+        <h3 class="card-title">$ ${producto.precioVenta}</h3>
+        <p class="card-text"> ${producto.descripcion} </p>
+        <button id="btnAgregarAlCarrito" class="card-button" type="button">Agregar al Carrito</button>
+    </div>
+    </div>
+    `;
 
-        cardContainer.appendChild(card);
-    }
+    cardContainer.appendChild(card);
+}
 }
 
 mostrarProductos();
@@ -506,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
             agregarProductoAlCarrito(producto);
 
             Toastify({
-                text: "¡Añadido al carrito!",
+                text: `¡Se sumo un ${producto.nombre} al carrito!`,
                 className: "info",
                 duration: 900,
                 style: {
@@ -595,13 +641,13 @@ function agregarProductoAlCarrito(producto) {
                 <span>Cantidad: <span class="cantidadEnCarrito">1</span></span>
             </div>
             <div class="precioBoton"> 
-                <span>Total: <span class="precioTotalEnCarrito">$${producto.precio.toFixed(2)}</span></span>
+                <span>Total: <span class="precioTotalEnCarrito">$${producto.precio.toFixed(2)}</span></span> 
             <div>
                 <button class="restarProducto" data-id="${itemID}"><i class="bi bi-arrow-down-circle"></i></button>
                 <button class="eliminarProducto" data-id="${itemID}"><i class="bi bi-ban"></i></button>
             </div>
             </div>
-        `;
+        `; 
         listaCompras.appendChild(li);
     }
     cambiarIconoCarrito();
@@ -629,26 +675,35 @@ document.getElementById('btnConfirmarPedido').addEventListener('click', function
     const productosEnCarrito = document.querySelectorAll('#listaCompras li');
     let totalCompra = 0;
 
-    productosEnCarrito.forEach(item => {
-        const nombre = item.querySelector('.nombre').textContent;
-        const cantidad = item.querySelector('.cantidadEnCarrito').textContent;
-        const total = item.querySelector('.precioTotalEnCarrito').textContent;
+    // Verificar si el carrito está vacío
+    if (productosEnCarrito.length === 0) {
+        Swal.fire({
+            title: "Tu carrito está vacío!",
+            icon: "error"
+        });
+        return; // Detener la ejecución si el carrito está vacío
+    }
 
-        totalCompra += parseFloat(total.replace('$', ''));
+productosEnCarrito.forEach(item => {
+    const nombre = item.querySelector('.nombre').textContent;
+    const cantidad = item.querySelector('.cantidadEnCarrito').textContent;
+    const total = item.querySelector('.precioTotalEnCarrito').textContent;
 
-        const productoItem = document.createElement('div');
-        productoItem.classList.add('producto-item');
-        productoItem.innerHTML = `
-            <div class="producto-info">
-                <span>${nombre}</span>
-                <br>
-                <span>Cantidad: ${cantidad}</span>
-            </div>
-            <div class="producto-total">${total}</div>
-        `;
+    totalCompra += parseFloat(total.replace('$', ''));
 
-        resumenCompra.appendChild(productoItem);
-    });
+    const productoItem = document.createElement('div');
+    productoItem.classList.add('producto-item');
+    productoItem.innerHTML = `
+        <div class="producto-info">
+            <span>${nombre}</span>
+            <br>
+            <span>Cantidad: ${cantidad}</span>
+        </div>
+        <div class="producto-total">${total}</div>
+    `;
+
+    resumenCompra.appendChild(productoItem);
+});
 
     const totalItem = document.createElement('div');
     totalItem.classList.add('producto-item');
@@ -667,11 +722,9 @@ document.getElementById('btnConfirmarPedido').addEventListener('click', function
         behavior: 'smooth'
     });
 
-    // Mostrar el modal
+    // Mostrar el modal solo si hay productos en el carrito
     document.getElementById('modalConfirmarPedido').style.display = 'block';
-
-    // Cerrar el modal del carrito
-    document.getElementById('modalCarrito').style.display = 'none';
+    carrito.style.right = '-400px'; // Mueve el carrito
 });
 
 document.getElementById('btnCerrarConfirmarPedido').addEventListener('click', function() {
@@ -679,21 +732,35 @@ document.getElementById('btnCerrarConfirmarPedido').addEventListener('click', fu
 });
 
 document.getElementById('btnFinalizarCompra').addEventListener('click', function() {
-    Swal.fire({
-        title: "Confirmas la compra?",
-        text: "No tenes vuelta atras!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar!"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: "Listo!",
-                text: "Muchas gracias por elegirnos, Salud!!",
-                icon: "success"
-            });
+    // Verificar si el carrito está vacío
+    const productosEnCarrito = document.querySelectorAll('#listaCompras li');
+    if (productosEnCarrito.length === 0) {
+        Swal.fire({
+            title: "Tu carrito está vacío!",
+            icon: "error"
+        });
+        return; // Detener la ejecución si el carrito está vacío
+    }
+
+// Cerrar el modal de confirmar pedido
+document.getElementById('modalConfirmarPedido').style.display = 'none';
+
+// Mostrar el mensaje de confirmación de compra
+Swal.fire({
+    title: "Confirmas la compra?",
+    text: "No hay vuelta atrás!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Confirmar!"
+}).then((result) => {
+    if (result.isConfirmed) {
+        Swal.fire({
+            title: "¡Listo!",
+            text: "¡Muchas gracias por elegirnos! ¡Salud!",
+            icon: "success"
+        });
 
             // Vaciar el carrito
             const carrito = document.getElementById('listaCompras');
@@ -701,9 +768,24 @@ document.getElementById('btnFinalizarCompra').addEventListener('click', function
 
             // Cambiar el icono del carrito a vacío
             cambiarIconoCarritoVacio();
+
+            productosEnCarrito.forEach(item => {
+                const nombreProducto = item.querySelector('.nombre').textContent;
+                const cantidadProducto = parseInt(item.querySelector('.cantidadEnCarrito').textContent);
+        
+                // Encontrar el producto en el arreglo
+                const producto = productos.find(prod => prod.nombre === nombreProducto);
+                
+                if (producto) {
+                    // Restar la cantidad vendida del stock actual
+                    producto.stock -= cantidadProducto;
+                    console.log(`Producto: ${producto.nombre}, Stock actualizado: ${producto.stock}`);
+                }
+            });
         }
     });
-
-    // Cerrar el modal de confirmar pedido
-    document.getElementById('modalConfirmarPedido').style.display = 'none';
 });
+
+
+/*------------------------------------------------------------------------------------------------stock*/
+

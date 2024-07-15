@@ -51,17 +51,17 @@ body {
 
 /*----------------------------------------------------------FORM LOGIN*/
 
-.noFunciona {
+ .noFunciona {
     pointer-events: none; 
     opacity: 1; 
 }
 
 .body-no-scroll {
     overflow: hidden;
-}
+} 
 
 .contenedor-login {
-    /* visibility: hidden;   */
+    /*visibility: hidden;*/  
     display: block;
     position: fixed;
     z-index: 10;
@@ -380,29 +380,18 @@ body {
 
 /*----------------------------------------------------------------------------------------------------------titulo y boton*/
 
-.hero {
-    position: relative;
-    height: calc(100vh - 120px); /* Altura del hero */
-    background-image: url('../img/fondobotellas.jpg');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    flex-wrap: wrap;
-}
 
 .hero-titulo-boton {
     position: absolute;
-    top: 200px; /* Ajustamos la distancia desde la parte superior */
-    right: 100px; /* Ajustamos la distancia desde el lado derecho */
+    top: 200px;
+    right: 100px;
     z-index: 9;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centramos verticalmente */
-    justify-content: center; /* Centramos horizontalmente */
-    text-align: center; /* Alineación del texto dentro del contenedor */
-    transition: 1s; /* Transición para efectos */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: 1s;
 }
 
 .boton-hero {
@@ -417,7 +406,8 @@ body {
     height: 100px;
     font-family: truculenta;
     font-weight: bold;
-    border: none; /* Quitamos el borde para evitar problemas de superposición */
+    border: none;
+    transition: 2s;
 }
 
 .boton-hero:hover {
@@ -431,15 +421,15 @@ body {
     font-family: truculenta;
     font-weight: bold;
     text-shadow: 8px 8px 16px black;
-    margin-bottom: 10px; /* Ajustamos el margen inferior */
+    margin-bottom: 10px;
 }
 
 .contenedorImagenes {
     background-image: url(../img/fondobotellas.jpg);
-    background-size:cover;
+    background-size: cover;
     background-position: center;
-    width: 100%; /* Ancho total del contenedor de imágenes */
-    height: calc(100vh - 120px); /* Altura total del contenedor de imágenes */
+    width: 100%;
+    height: calc(100vh - 120px);
     display: flex;
     justify-content: space-around;
     align-items: flex-end;
@@ -448,14 +438,14 @@ body {
 }
 
 .img-container {
-    width: 20%; /* Ancho de cada contenedor de imagen pequeña */
-    height: 20%; /* Altura de cada contenedor de imagen pequeña */
+    width: 20%;
+    height: 20%;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9;
-    margin-bottom: 20px; /* Espacio entre cada fila de imágenes */
+    margin-bottom: 20px;
 }
 
 .img-container button {
@@ -470,7 +460,7 @@ body {
     width: 80%;
     height: 80%;
     object-fit: cover;
-    margin-bottom: 50px; 
+    margin-bottom: 50px;
     filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.5));
     transition: transform 0.3s ease;
 }
@@ -482,11 +472,11 @@ body {
 .publicidad {
     position: absolute;
     left: 0;
-    bottom: 50px; 
-    width: 50%; 
+    bottom: 50px;
+    width: 50%;
     height: auto;
     z-index: 4;
-    display: none; 
+    display: none;
     filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.5));
 }
 
@@ -494,6 +484,26 @@ body {
     width: 80%;
     height: 80%;
     object-fit: cover;
+}
+
+.texto-contenedor {
+    width: 40%;
+    height: calc(100vh - 200px);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.479);
+    border-radius: 12px;
+    border: 1px solid rgba(209, 213, 219, 0.3);
+    box-shadow: 0 -20px 150px -20px rgba(0, 0, 0, 0.5);
+    color: black;
+    position: absolute;
+    bottom: 50px;
+    right: 150px;
+    display: none;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 5;
+    text-align: center; /*no se porque esto alinea el contenido de la api*/
 }
 
 @keyframes floatIn {
@@ -507,7 +517,18 @@ body {
     }
 }
 
-@keyframes fadeOut {
+@keyframes floatOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes floatDown {
     from {
         transform: translateY(0);
         opacity: 1;
@@ -518,13 +539,79 @@ body {
     }
 }
 
-.fade-out {
-    animation: fadeOut 1s forwards;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 .float-in {
-    animation: floatIn 0.5s forwards;
+    animation: floatIn 0.5s ease-in-out forwards;
 }
+
+.float-out {
+    animation: floatOut 0.5s ease-in-out forwards;
+}
+
+.float-down {
+    animation: floatDown 0.3s ease-out forwards; 
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+.texto-contenedor img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    
+}
+
+.texto-contenedor h3 {
+    position: absolute;
+    font-size: 32px;
+    margin-bottom: 10px;
+    z-index: 10;
+    color: white;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.781);
+
+}
+
+.texto-contenedor p {
+    width: 100%;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: white;
+    font-size: 18px;
+    line-height: 1.5;
+    font-family: truculenta;
+    background: radial-gradient(ellipse at left bottom, rgb(0, 0, 0) 0%, rgba(39, 43, 40, 0.919) 59%, rgba(54, 53, 53, 0.856) 100%);
+    padding: 5px 20px;
+}
+
+
+
+/*------------------------------------------------------------------------------------------------NOSOTROS*/
 
 .nosotros h1 {
     font-size: 80px;
@@ -930,7 +1017,7 @@ body {
 .modal-confirmar-pedido {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 10000;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -1176,6 +1263,21 @@ background-color: #036017;
 
 /*------------------------------------------------------------------IMAGENES INICIO*/
 
+.galeriaImagenes {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    background-size: cover;
+}
+
+.img-container { /* imagenes de marcas*/
+    width: 20%;
+    height: 20%;
+    margin-bottom: 10px;
+    margin-right: 30px;
+}
+
 .img-container img {
     width: 110%;
     height: 110%;
@@ -1184,6 +1286,8 @@ background-color: #036017;
     filter: drop-shadow(10px 10px 10px rgba(0, 0, 0, 0.5));
     transition: transform 0.3s ease;
 }
+
+
 
 
 /*---------------------------------------------------------------------------------------NOSOTROS*/
@@ -1199,22 +1303,6 @@ background-color: #036017;
     margin: 0px 0px;
 }
 
-/*--------------------------------------------------------------------------------------imagenes de ingreso*/
-
-.galeriaImagenes {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-end;
-    background-size: cover;
-}
-
-.img-container { /* imagenes de marcas*/
-    width: 20%;
-    height: 20%;
-    margin-bottom: 10px;
-    margin-right: 30px;
-}
 
 /*---------------------------------------------------------------------------------------carrito 790px*/
 
