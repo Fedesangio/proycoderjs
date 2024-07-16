@@ -23,7 +23,7 @@ header nav div a {
     font-size: 20px !important;
     text-shadow: 8px 4px 8px black;
     margin: 0 20px;
-    z-index: 100000000000;
+    
 }
 
 ::-webkit-scrollbar {
@@ -1297,7 +1297,7 @@ background-color: #036017;
 .texto-contenedor {
     width: 50%;
     height: calc(100vh - 200px);
-    bottom: 50px;
+    top: 150px;
     right: 5px;
     display: none;
     padding: 20px;
