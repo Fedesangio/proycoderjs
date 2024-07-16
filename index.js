@@ -209,7 +209,7 @@ function mostrarRegistro() {
     document.body.classList.add('body-no-scroll');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() { //con esto identifico si hay usuarios guardados y arranca en registro si no hay
     let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
 
     if (Object.keys(usuarios).length === 0) {
@@ -217,13 +217,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         mostrarLogin();
     }
-
-    document.getElementById('registerSection').querySelector('button[type="submit"]').onclick = registrarUsuario;
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        iniciarSesion();
-    });
-    document.getElementById('btnCerrar').addEventListener('click', cerrarModal);
 });
 
 function esMayorDeEdad(fechaNacimiento) {
@@ -235,27 +228,17 @@ function esMayorDeEdad(fechaNacimiento) {
     if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
         edad--;  
     }
-    return edad >= 18 && edad < 80; // Limitar a 80 años para evitar fechas no válidas
+    return edad >= 18 && edad <80; //limito a 80 años para que no puedan poner cualquier año de naciomiento
 }
 
 function mostrarModal(mensaje) {
     document.getElementById('errorText').innerText = mensaje;
     document.getElementById('miModalDenegado').style.display = 'block';
-    document.body.classList.add('noFunciona'); // No borrar esta declaración en ninguna parte del código, todas son necesarias
+    document.body.classList.add('noFunciona') //no borrar esta declaracion en ninguna parte del codigo, todas son necesarias
 }
 
 function cerrarModal() {
     document.getElementById('miModalDenegado').style.display = 'none';
-}
-
-function mostrarRegistro() {
-    document.getElementById('registerSection').style.display = 'block';
-    document.getElementById('loginSection').style.display = 'none';
-}
-
-function mostrarLogin() {
-    document.getElementById('registerSection').style.display = 'none';
-    document.getElementById('loginSection').style.display = 'block';
 }
 
 function registrarUsuario(event) {
@@ -271,7 +254,7 @@ function registrarUsuario(event) {
     }
 
     if (!esMayorDeEdad(birthdate)) {
-        mostrarModal('Hay un error en la fecha de nacimiento o no tienes suficiente edad para ingresar.');
+        mostrarModal('Hay un error en la fecha de nacimiento.');
         return;
     }
 
@@ -291,16 +274,24 @@ function registrarUsuario(event) {
     document.getElementById('register-password').value = '';
     document.getElementById('register-fecha-nacimiento').value = '';
 }
+// Asociar la función registrarUsuario al evento click del botón de registro
+document.getElementById('registerSection').querySelector('button[type="submit"]').onclick = registrarUsuario;
 
-function iniciarSesion() {
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
     const username = document.getElementById('input-usuario').value;
     const password = document.getElementById('input-password').value;
-    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {};
+
+    let usuarios = JSON.parse(localStorage.getItem('usuarios')) || {}; 
 
     if (usuarios[username] && usuarios[username] === password) {
+
         mostrarModal('Inicio de sesión exitoso.');
-        document.body.classList.remove('noFunciona', 'body-no-scroll');
-        document.getElementById('modalLogin').style.display = 'none';
+        document.body.classList.remove('noFunciona'); 
+        document.body.classList.remove('body-no-scroll')//borro la clase del body que impide que haga scroll
+
+        document.getElementById('modalLogin').style.display = 'none'; // Cerrar el modal
         document.getElementById('input-usuario').value = '';
         document.getElementById('input-password').value = '';
     } else if (!usuarios[username]) {
@@ -308,7 +299,10 @@ function iniciarSesion() {
     } else {
         mostrarModal('Nombre de usuario o contraseña incorrectos.');
     }
-}
+});
+
+document.getElementById('btnCerrar').addEventListener('click', cerrarModal);
+
 
 /*---------------------------------------------------------------------------------------imagenes inicio*/
 
